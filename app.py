@@ -5,8 +5,8 @@ import pandas as pd
 from dotenv import load_dotenv
 import os
 
-# Load environment variables
-load_dotenv()
+# Load API Key
+os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 
 # Initialize OpenAI LLM
 llm = ChatOpenAI(model="gpt-4o", temperature=0)
