@@ -11,12 +11,13 @@ from colorama import Fore, Style, init
 import pandas as pd
 from IPython.display import Image, display
 import os
+import streamlit as st
 
 # ✅ Initialize colorama for colored output
 init(autoreset=True)
 
 # ✅ Load environment variables
-load_dotenv()
+os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 
 # ✅ Initialize OpenAI LLM
 llm = ChatOpenAI(model="gpt-4o", temperature=0)
