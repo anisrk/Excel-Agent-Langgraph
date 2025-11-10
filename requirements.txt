@@ -1,8 +1,9 @@
 streamlit
 pandas
-python-dotenv
 langchain
 langchain-openai
+langchain-community
 langchain-experimental
-openpyxl
 langgraph
+python-dotenv
+openpyxl
