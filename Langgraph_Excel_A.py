@@ -1,6 +1,3 @@
-# ---------------------------------------
-# 🌈 LangGraph Excel Agent — Pro Console
-# ---------------------------------------
 
 from langchain_openai import ChatOpenAI
 from langchain_experimental.agents import create_pandas_dataframe_agent
@@ -13,27 +10,24 @@ from IPython.display import Image, display
 import os
 import streamlit as st
 
-# ✅ Initialize colorama for colored output
 init(autoreset=True)
 
-# ✅ Load environment variables
+
 os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 
-# ✅ Initialize OpenAI LLM
+
 llm = ChatOpenAI(model="gpt-4o", temperature=0)
 print(Fore.GREEN + "✅ OpenAI LLM initialized successfully!")
 
-# ✅ Load Excel data
 df = pd.read_excel("employee_data_100.xlsx")
 print(Fore.GREEN + "✅ Excel file loaded successfully!")
 print(Fore.CYAN + "📋 Preview of your dataset:")
 print(df.head())
 
-# ✅ Create the Pandas Agent
 agent = create_pandas_dataframe_agent(llm, df, verbose=False)
 print(Fore.GREEN + "✅ Excel Agent created successfully!")
 
-# ✅ Define metadata
+
 metadata = """
 EmployeeID: Unique identifier for each employee.
 Name: Full name of the employee.
@@ -46,9 +40,7 @@ PerformanceRating: Rating from 1.0 (lowest) to 5.0 (highest).
 """
 print(Fore.GREEN + "✅ Custom metadata loaded successfully!")
 
-# --------------------------------
-# 🧩 Define LangGraph Schema & Nodes
-# --------------------------------
+
 class ExcelState(TypedDict):
     user_query: str
     metadata_context: str
@@ -83,9 +75,6 @@ def analyze_excel(state: ExcelState):
         print(Fore.RED + f"❌ Analysis failed: {e}")
     return state
 
-# --------------------------------
-# 🕸️ Build LangGraph Structure
-# --------------------------------
 graph = StateGraph(ExcelState)
 graph.add_node("attach_metadata", add_metadata)
 graph.add_node("interpret_query", interpret_query)
@@ -99,9 +88,7 @@ graph.add_edge("analyze_excel", END)
 workflow = graph.compile()
 print(Fore.GREEN + "✅ LangGraph Excel Agent compiled successfully!")
 
-# --------------------------------
-# 🎨 Visualize Workflow Diagram
-# --------------------------------
+
 try:
     png_data = workflow.get_graph(xray=True).draw_mermaid_png()
     with open("excel_agent_workflow.png", "wb") as f:
@@ -111,9 +98,7 @@ try:
 except Exception as e:
     print(Fore.YELLOW + f"⚠️ Could not generate workflow diagram: {e}")
 
-# --------------------------------
-# 💬 Interactive Console Interface
-# --------------------------------
+
 print(Fore.MAGENTA + "\n🚀 LangGraph Excel Agent is now LIVE!")
 print(Fore.MAGENTA + "Type your questions below (or type 'exit' to quit):\n")
 
@@ -127,17 +112,17 @@ print(Fore.BLUE + "\n🔄 Processing your question through LangGraph pipeline...
 initial_state = {"user_query": user_q}
 result = workflow.invoke(initial_state)
 
-# 🧠 Clean up result: extract only the AI's final message
+
 answer_data = result.get("result", {})
 if isinstance(answer_data, dict):
     final_answer = answer_data.get("output", "")
 else:
     final_answer = str(answer_data)
 
-# 🧹 Remove extra escape characters and format text
+
 final_answer = final_answer.replace("\\n", "\n").replace("\\t", "    ").strip()
 
-# 🎨 Nicely formatted output
+
 ###print(Fore.GREEN + "\n✨ Final Answer:\n" + Style.RESET_ALL)
 ###print(Fore.WHITE + "---------------------------------------------")
 ###print(Fore.CYAN + final_answer)
