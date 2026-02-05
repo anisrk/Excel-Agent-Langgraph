@@ -17,15 +17,15 @@ os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 
 
 llm = ChatOpenAI(model="gpt-4o", temperature=0)
-print(Fore.GREEN + "✅ OpenAI LLM initialized successfully!")
+print(Fore.GREEN + " OpenAI LLM initialized successfully!")
 
 df = pd.read_excel("employee_data_100.xlsx")
-print(Fore.GREEN + "✅ Excel file loaded successfully!")
-print(Fore.CYAN + "📋 Preview of your dataset:")
+print(Fore.GREEN + " Excel file loaded successfully!")
+print(Fore.CYAN + " Preview of your dataset:")
 print(df.head())
 
 agent = create_pandas_dataframe_agent(llm, df, verbose=False)
-print(Fore.GREEN + "✅ Excel Agent created successfully!")
+print(Fore.GREEN + " Excel Agent created successfully!")
 
 
 metadata = """
@@ -38,7 +38,7 @@ JoiningDate: Date the employee joined the company.
 City: City of the employee’s office location.
 PerformanceRating: Rating from 1.0 (lowest) to 5.0 (highest).
 """
-print(Fore.GREEN + "✅ Custom metadata loaded successfully!")
+print(Fore.GREEN + " Custom metadata loaded successfully!")
 
 
 class ExcelState(TypedDict):
@@ -48,12 +48,12 @@ class ExcelState(TypedDict):
     result: str
 
 def add_metadata(state: ExcelState):
-    print(Fore.CYAN + "\n🧱 Step 1 → Attaching metadata...")
+    print(Fore.CYAN + "\n Step 1 → Attaching metadata...")
     state["metadata_context"] = metadata
     return state
 
 def interpret_query(state: ExcelState):
-    print(Fore.CYAN + "🔍 Step 2 → Interpreting user query with metadata...")
+    print(Fore.CYAN + " Step 2 → Interpreting user query with metadata...")
     q = state["user_query"]
     meta = state["metadata_context"]
     enriched = (
@@ -64,15 +64,15 @@ def interpret_query(state: ExcelState):
     return state
 
 def analyze_excel(state: ExcelState):
-    print(Fore.CYAN + "📊 Step 3 → Running Excel data analysis...")
+    print(Fore.CYAN + " Step 3 → Running Excel data analysis...")
     query = state["enriched_query"]
     try:
         result = agent.invoke(query)
         state["result"] = result
-        print(Fore.GREEN + "✅ Analysis completed successfully!")
+        print(Fore.GREEN + " Analysis completed successfully!")
     except Exception as e:
-        state["result"] = f"⚠️ Error: {e}"
-        print(Fore.RED + f"❌ Analysis failed: {e}")
+        state["result"] = f" Error: {e}"
+        print(Fore.RED + f" Analysis failed: {e}")
     return state
 
 graph = StateGraph(ExcelState)
@@ -86,7 +86,7 @@ graph.add_edge("interpret_query", "analyze_excel")
 graph.add_edge("analyze_excel", END)
 
 workflow = graph.compile()
-print(Fore.GREEN + "✅ LangGraph Excel Agent compiled successfully!")
+print(Fore.GREEN + " LangGraph Excel Agent compiled successfully!")
 
 
 try:
@@ -94,21 +94,21 @@ try:
     with open("excel_agent_workflow.png", "wb") as f:
         f.write(png_data)
     display(Image(filename="excel_agent_workflow.png"))
-    print(Fore.GREEN + "🖼️ Workflow diagram saved as 'excel_agent_workflow.png'")
+    print(Fore.GREEN + " Workflow diagram saved as 'excel_agent_workflow.png'")
 except Exception as e:
-    print(Fore.YELLOW + f"⚠️ Could not generate workflow diagram: {e}")
+    print(Fore.YELLOW + f" Could not generate workflow diagram: {e}")
 
 
-print(Fore.MAGENTA + "\n🚀 LangGraph Excel Agent is now LIVE!")
+print(Fore.MAGENTA + "\n LangGraph Excel Agent is now LIVE!")
 print(Fore.MAGENTA + "Type your questions below (or type 'exit' to quit):\n")
 
 while True:
-    user_q = input(Fore.YELLOW + "❓ Your question: ")
+    user_q = input(Fore.YELLOW + " Your question: ")
     if user_q.lower().strip() == "exit":
-        print(Fore.CYAN + "\n👋 Exiting LangGraph Excel Agent. Goodbye!\n")
+        print(Fore.CYAN + "\n Exiting LangGraph Excel Agent. Goodbye!\n")
         break
 
-print(Fore.BLUE + "\n🔄 Processing your question through LangGraph pipeline...\n")
+print(Fore.BLUE + "\n Processing your question through LangGraph pipeline...\n")
 initial_state = {"user_query": user_q}
 result = workflow.invoke(initial_state)
 
@@ -123,7 +123,7 @@ else:
 final_answer = final_answer.replace("\\n", "\n").replace("\\t", "    ").strip()
 
 
-###print(Fore.GREEN + "\n✨ Final Answer:\n" + Style.RESET_ALL)
+###print(Fore.GREEN + "\n Final Answer:\n" + Style.RESET_ALL)
 ###print(Fore.WHITE + "---------------------------------------------")
 ###print(Fore.CYAN + final_answer)
 ###print(Fore.WHITE + "---------------------------------------------\n")
